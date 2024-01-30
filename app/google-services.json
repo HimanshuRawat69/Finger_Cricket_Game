@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874572887744",
+    "project_id": "fingure-cricket",
+    "storage_bucket": "fingure-cricket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874572887744:android:9b7511aad23ada86395f25",
+        "android_client_info": {
+          "package_name": "com.example.fingurecricketgame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgYKBKNgkpT0dt4xgpME6RY-SPwfcLSsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
