@@ -1,5 +1,6 @@
 package com.example.fingurecricketgame
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -122,5 +123,13 @@ class MultiPlayerCreateJoinActivity : AppCompatActivity() {
             }
         }
     }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        // Display a Toast message to inform the user that the back button is disabled
+        val intent7=Intent(this,MainActivity::class.java)
+        startActivity(intent7)
 
+        // By using the @SuppressLint annotation, we're indicating that we're intentionally not calling super.onBackPressed()
+        // super.onBackPressed()
+    }
 }
