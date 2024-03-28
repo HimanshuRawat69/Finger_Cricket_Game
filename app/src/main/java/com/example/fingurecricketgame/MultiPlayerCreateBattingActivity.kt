@@ -46,6 +46,7 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
         val playagainView=findViewById<ImageView>(R.id.imageView10)
         val gameIdView=findViewById<TextView>(R.id.textView10)
         val lottieAnimationView = findViewById<ProgressBar>(R.id.lottie1)
+        val active=findViewById<ImageView>(R.id.imageView11)
 
 
         val scope= CoroutineScope(Dispatchers.IO)
@@ -102,8 +103,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                     if(value==true)
                     {
                         showToast("Player 2 Has Joined!")
+                        active.setImageResource(R.drawable.green_led)
                         CoroutineScope(Dispatchers.Main).launch {
-                            oneView.isEnabled = true
                             notmakeVisible()
                         }
                     }
