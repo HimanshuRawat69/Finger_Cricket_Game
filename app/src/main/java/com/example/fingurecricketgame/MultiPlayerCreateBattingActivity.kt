@@ -55,6 +55,7 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
 
+
         fun checkInternetConnection():Boolean {
             val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -141,6 +142,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
             val intent6= Intent(this,MultiPlayerCreateJoinActivity::class.java)
             startActivity(intent6)
         }
+
+
         oneView.setOnClickListener {
 
            if(!checkInternetConnection())
