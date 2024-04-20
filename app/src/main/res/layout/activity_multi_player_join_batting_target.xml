@@ -87,14 +87,16 @@
         android:textSize="34sp"
         android:textStyle="bold" />
 
-    <ProgressBar
-        android:id="@+id/lottie1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminateDrawable="@drawable/progressbar"
-        android:padding="10dp"
-        android:visibility="gone"
-        />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie1"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/loading"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true">
+
+        </com.airbnb.lottie.LottieAnimationView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

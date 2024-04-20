@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.airbnb.lottie.LottieAnimationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -40,7 +41,7 @@ class MultiPlayerCreateBowlingTargetActivity : AppCompatActivity() {
         val screenView = findViewById<ImageView>(R.id.imageView4)
         val playagainView = findViewById<ImageView>(R.id.imageView10)
         val gameIdView = findViewById<TextView>(R.id.textView10)
-        val lottieAnimationView = findViewById<ProgressBar>(R.id.lottie1)
+        val lottieAnimationView = findViewById<LottieAnimationView>(R.id.lottie1)
         val targetView=findViewById<TextView>(R.id.textView9)
 
         var target=intent.getIntExtra("TARGET",0)

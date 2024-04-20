@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.makeText
+import com.airbnb.lottie.LottieAnimationView
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -45,7 +46,7 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
         val screenView=findViewById<ImageView>(R.id.imageView4)
         val playagainView=findViewById<ImageView>(R.id.imageView10)
         val gameIdView=findViewById<TextView>(R.id.textView10)
-        val lottieAnimationView = findViewById<ProgressBar>(R.id.lottie1)
+        val lottieAnimationView = findViewById<LottieAnimationView>(R.id.lottie1)
         val active=findViewById<ImageView>(R.id.imageView11)
 
 
@@ -128,7 +129,7 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
         var wickets=0
 
         gameReference.child("Player1Joined").setValue(true)
-        oneView.isEnabled = false
+        makeVisible();
         checkPlayer2Joined()
         var player2ResponseListener: ValueEventListener? = null
 
