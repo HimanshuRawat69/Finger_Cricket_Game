@@ -3,6 +3,7 @@ package com.example.fingurecricketgame
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,9 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import com.airbnb.lottie.LottieAnimationView
 
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -54,6 +58,27 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
 
         fun showToast(message: String) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+        fun vibratePhone(context: Context) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // For Android API level 26 and above
+                val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(vibrationEffect)
+            } else {
+                // For Android API level below 26
+                vibrator.vibrate(500) // Vibrate for 500 milliseconds
+            }
+        }
+
+        fun playSound(context: Context) {
+            val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound) // Replace 'sound' with the name of your sound file
+            mediaPlayer.start()
+
+            // Release the MediaPlayer when the sound has finished playing
+            mediaPlayer.setOnCompletionListener {
+                it.release()
+            }
         }
 
 
@@ -173,6 +198,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                                                         .setValue(wickets)
                                                     scoreView.text = "Score: $runs-$wickets"
                                                     screenView.setImageResource(R.drawable.onevsone)
+                                                    vibratePhone(this@MultiPlayerCreateBattingActivity)
+                                                    playSound(this@MultiPlayerCreateBattingActivity)
                                                     if(wickets==10)
                                                     {
                                                         gameReference.child("Player1Response")
@@ -290,6 +317,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                                                 .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovstwo)
+                                            vibratePhone(this@MultiPlayerCreateBattingActivity)
+                                            playSound(this@MultiPlayerCreateBattingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player1Response")
@@ -408,6 +437,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                                                 .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevsthree)
+                                            vibratePhone(this@MultiPlayerCreateBattingActivity)
+                                            playSound(this@MultiPlayerCreateBattingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player1Response")
@@ -526,6 +557,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                                                 .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvsfour)
+                                            vibratePhone(this@MultiPlayerCreateBattingActivity)
+                                            playSound(this@MultiPlayerCreateBattingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player1Response")
@@ -644,6 +677,8 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                                                 .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvssix)
+                                            vibratePhone(this@MultiPlayerCreateBattingActivity)
+                                            playSound(this@MultiPlayerCreateBattingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player1Response")

@@ -3,9 +3,13 @@ package com.example.fingurecricketgame
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -27,8 +31,10 @@ private lateinit var gameReference: DatabaseReference
 class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_player_join_bowling)
+
 
         database = FirebaseDatabase.getInstance()
 
@@ -53,9 +59,29 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
 
         val scope= CoroutineScope(Dispatchers.IO)
 
-
         fun showToast(message: String) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+        fun vibratePhone(context: Context) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // For Android API level 26 and above
+                val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(vibrationEffect)
+            } else {
+                // For Android API level below 26
+                vibrator.vibrate(500) // Vibrate for 500 milliseconds
+            }
+        }
+
+        fun playSound(context: Context) {
+            val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound) // Replace 'sound' with the name of your sound file
+            mediaPlayer.start()
+
+            // Release the MediaPlayer when the sound has finished playing
+            mediaPlayer.setOnCompletionListener {
+                it.release()
+            }
         }
 
         fun checkInternetConnection():Boolean {
@@ -137,6 +163,7 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
                                             wickets++
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevsone)
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player2Response")
@@ -246,6 +273,7 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
                                             wickets++
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovstwo)
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player2Response")
@@ -355,6 +383,7 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
                                             wickets++
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevsthree)
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player2Response")
@@ -464,6 +493,7 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
                                             wickets++
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvsfour)
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player2Response")
@@ -574,6 +604,7 @@ class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
                                             wickets++
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvssix)
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
                                             if(wickets==10)
                                             {
                                                 gameReference.child("Player2Response")

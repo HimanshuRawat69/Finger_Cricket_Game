@@ -10,23 +10,33 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Himanshu Rawat\.android\avd\Pixel_6_API_33.avd" />
+                  <value value="C:\Users\Himanshu Rawat\.android\avd\Pixel_2_XL_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T08:58:10.917322200Z" />
-          <targetsSelectedWithDialog>
+          <timeTargetWasSelectedWithDropDown value="2024-08-11T10:42:30.681901200Z" />
+          <multipleDevicesSelectedInDropDown value="true" />
+          <runningDeviceTargetsSelectedWithDialog>
             <Target>
-              <type value="QUICK_BOOT_TARGET" />
+              <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Himanshu Rawat\.android\avd\Pixel_6_API_33.avd" />
+                  <value value="C:\Users\Himanshu Rawat\.android\avd\Pixel_2_XL_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
-          </targetsSelectedWithDialog>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="adb-NVWKOJBYBIYD6HDA-WqBKXh._adb-tls-connect._tcp" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetsSelectedWithDialog>
         </State>
       </entry>
     </value>

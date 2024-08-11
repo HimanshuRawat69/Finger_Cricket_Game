@@ -3,8 +3,12 @@ package com.example.fingurecricketgame
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -33,6 +37,8 @@ class MultiPlayerCreateJoinActivity : AppCompatActivity() {
         fun showToast(message: String) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
+
+
 
         fun checkInternetConnection():Boolean {
             val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
