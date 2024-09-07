@@ -130,7 +130,7 @@ class MultiPlayerCreateBattingActivity : AppCompatActivity() {
                     if(value==true)
                     {
                         showToast("Player 2 Has Joined!")
-                        active.setImageResource(R.drawable.green_led)
+                        active.setImageResource(R.drawable.active_dot)
                         CoroutineScope(Dispatchers.Main).launch {
                             notmakeVisible()
                         }

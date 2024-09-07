@@ -30,7 +30,7 @@
                 android:layout_width="57dp"
                 android:layout_height="50dp"
                 android:padding="4dp"
-                android:src="@drawable/green_led" />
+                android:src="@drawable/active_dot" />
         </LinearLayout>
 
     <TextView
