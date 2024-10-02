@@ -4,12 +4,12 @@ A Singleplayer or multiplayer finger cricket game where players can join and pla
 
 ## Features
 
-- Multiplayer gameplay with up to 4 players.
-- Automatic shuffling and distribution of 52 cards.
+- Multiplayer gameplay with up to 2 players.
+- Play against an AI opponent, where the AI randomly generates its finger numbers for bowling.
 - Real-time updates and player status handling.
-- Firebase integration for storing player data and leaderboards.
-- Dynamic UI for displaying player cards, status, and game progress.
-- Random card assignment to each player.
+- Firebase integration for storing player data.
+- Real-time multiplayer: Players can connect and play against each other over a local network or online.
+- urn-based system: Players take turns batting and bowling, with real-time score updates.
 - Clean and intuitive interface.
 
 ## Screenshots
@@ -27,5 +27,5 @@ A Singleplayer or multiplayer finger cricket game where players can join and pla
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/HimanshuRawat69/365-Cards-Game.git
-cd 365-Cards-Game
+git clone https://github.com/HimanshuRawat69/Finger_Cricket_Game.git
+cd Finger_Cricket_Game
