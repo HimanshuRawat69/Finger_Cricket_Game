@@ -11,6 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,6 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BattingTargetActivity : AppCompatActivity() {
+    private var mInterstitialAd: InterstitialAd? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_batting_target)
@@ -37,6 +44,25 @@ class BattingTargetActivity : AppCompatActivity() {
 
         var runs=0
         var wickets=0
+
+        MobileAds.initialize(this@BattingTargetActivity) {}
+
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(this@BattingTargetActivity,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                mInterstitialAd = interstitialAd
+                mInterstitialAd?.show(this@BattingTargetActivity)
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mInterstitialAd = null
+            }
+
+
+        })
+
+
+
 
         fun playSound(context: Context) {
             val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound) // Replace 'sound' with the name of your sound file
@@ -71,6 +97,12 @@ class BattingTargetActivity : AppCompatActivity() {
             startActivity(intent6)
         }
         oneView.setOnClickListener {
+            if (mInterstitialAd != null) {
+                mInterstitialAd?.show(this@BattingTargetActivity)
+            }
+            else{
+                Toast.makeText(this,"not loadeed",Toast.LENGTH_SHORT).show()
+            }
             var randomHit=(1..6).random()
             var opponentHit= if(randomHit==5)
             {
@@ -109,7 +141,7 @@ class BattingTargetActivity : AppCompatActivity() {
                 }
                 if (runs >= target) {
                     val remainingWkt = 10 - wickets
-                    targetView.setText("You win by $remainingWkt Wickets")
+                    targetView.setText("You won by $remainingWkt Wickets")
                     oneView.isClickable = false
                     twoView.isClickable = false
                     threeView.isClickable = false
@@ -132,6 +164,7 @@ class BattingTargetActivity : AppCompatActivity() {
         }
 
         twoView.setOnClickListener {
+
             var randomHit=(1..6).random()
             var opponentHit= if(randomHit==5)
             {
@@ -170,7 +203,7 @@ class BattingTargetActivity : AppCompatActivity() {
                 }
                 if (runs >= target) {
                     val remainingWkt = 10 - wickets
-                    targetView.setText("You win by $remainingWkt Wickets")
+                    targetView.setText("You won by $remainingWkt Wickets")
                     oneView.isClickable = false
                     twoView.isClickable = false
                     threeView.isClickable = false
@@ -230,7 +263,7 @@ class BattingTargetActivity : AppCompatActivity() {
                 }
                 if (runs >= target) {
                     val remainingWkt = 10 - wickets
-                    targetView.setText("You win by $remainingWkt Wickets")
+                    targetView.setText("You won by $remainingWkt Wickets")
                     oneView.isClickable = false
                     twoView.isClickable = false
                     threeView.isClickable = false
@@ -290,7 +323,7 @@ class BattingTargetActivity : AppCompatActivity() {
                 }
                 if (runs >= target) {
                     val remainingWkt = 10 - wickets
-                    targetView.setText("You win by $remainingWkt Wickets")
+                    targetView.setText("You won by $remainingWkt Wickets")
                     oneView.isClickable = false
                     twoView.isClickable = false
                     threeView.isClickable = false
@@ -350,7 +383,7 @@ class BattingTargetActivity : AppCompatActivity() {
                 }
                 if (runs >= target) {
                     val remainingWkt = 10 - wickets
-                    targetView.setText("You win by $remainingWkt Wickets")
+                    targetView.setText("You won by $remainingWkt Wickets")
                     oneView.isClickable = false
                     twoView.isClickable = false
                     threeView.isClickable = false

@@ -16,6 +16,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -30,6 +35,7 @@ import kotlinx.coroutines.withContext
 private lateinit var database: FirebaseDatabase
 private lateinit var gameReference: DatabaseReference
 class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
+    private var mInterstitialAd: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_player_join_batting_target)
@@ -62,6 +68,22 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
         fun showToast(message: String) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
+
+        MobileAds.initialize(this@MultiPlayerJoinBattingTargetActivity) {}
+
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(this@MultiPlayerJoinBattingTargetActivity,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                mInterstitialAd = interstitialAd
+                mInterstitialAd?.show(this@MultiPlayerJoinBattingTargetActivity)
+            }
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mInterstitialAd = null
+            }
+
+
+        })
 
         fun vibratePhone(context: Context) {
             val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

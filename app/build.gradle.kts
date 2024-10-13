@@ -2,7 +2,10 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+
 }
+
+
 
 android {
     namespace = "com.example.fingurecricketgame"
@@ -52,7 +55,7 @@ dependencies {
 
     implementation ("com.airbnb.android:lottie:6.3.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2") // Use the latest version
-
+    implementation("com.google.android.gms:play-services-ads:23.3.0")
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
 
 

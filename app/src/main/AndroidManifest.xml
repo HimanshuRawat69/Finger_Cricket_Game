@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FingureCricketGame"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9926828039205424~2592722015"/>
         <activity
             android:name=".MultiPlayerJoinBattingTargetActivity"
             android:exported="false" />

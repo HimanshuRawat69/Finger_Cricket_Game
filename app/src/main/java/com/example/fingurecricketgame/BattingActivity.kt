@@ -8,7 +8,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BattingActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_batting)
@@ -33,6 +40,7 @@ class BattingActivity : AppCompatActivity() {
 
         var runs = 0
         var wickets = 0
+
 
         fun playSound(context: Context) {
             val mediaPlayer = MediaPlayer.create(
@@ -71,6 +79,7 @@ class BattingActivity : AppCompatActivity() {
             startActivity(intent6)
         }
         oneView.setOnClickListener {
+
             var randomHit = (1..6).random()
             var opponentHit = if (randomHit == 5) {
                 (1..4).random()
@@ -87,6 +96,7 @@ class BattingActivity : AppCompatActivity() {
                     playSound(this@BattingActivity)
                     if (wickets == 10) {
                         viewEnabledFalse()
+
                         val intent1 =
                             Intent(this@BattingActivity, BowlingTargetActivity::class.java)
                         intent1.putExtra("TARGET", runs + 1)
