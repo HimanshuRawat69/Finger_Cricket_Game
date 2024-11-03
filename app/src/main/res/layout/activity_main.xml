@@ -139,7 +139,7 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-3940256099942544/6300978111" /> <!-- Replace with your banner Ad Unit ID -->
+            ads:adUnitId="ca-app-pub-9926828039205424/7383784191" /> <!-- Replace with your banner Ad Unit ID -->
 
     </LinearLayout>
 </ScrollView>

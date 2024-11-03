@@ -1,5 +1,6 @@
 package com.example.fingurecricketgame
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,10 +38,9 @@ class BowlingActivity : AppCompatActivity() {
         var wickets=0
 
         fun playSound(context: Context) {
-            val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound) // Replace 'sound' with the name of your sound file
+            val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound)
             mediaPlayer.start()
 
-            // Release the MediaPlayer when the sound has finished playing
             mediaPlayer.setOnCompletionListener {
                 it.release()
             }
@@ -66,251 +67,157 @@ class BowlingActivity : AppCompatActivity() {
             val intent6=Intent(this,BattingBowlingSelect::class.java)
             startActivity(intent6)
         }
-        oneView.setOnClickListener {
-            var randomHit=(1..6).random()
-            var opponentHit= if(randomHit==5)
-            {
+
+
+        fun viewClick(yourHit:Int)
+        {
+            var randomHit = (1..6).random()
+            var opponentHit = if (randomHit == 5) {
                 (1..4).random()
-            }
-            else{
+            } else {
                 randomHit
             }
             viewEnabledFalse()
             CoroutineScope(Dispatchers.Main).launch {
                 delay(1000)
-                if (opponentHit == 1) {
-                    screenView.setImageResource(R.drawable.onevsone)
+                if (opponentHit == yourHit) {
+                    when(opponentHit)
+                    {
+                        1 -> screenView.setImageResource(R.drawable.onevsone)
+                        2 -> screenView.setImageResource(R.drawable.twovstwo)
+                        3 -> screenView.setImageResource(R.drawable.threevsthree)
+                        4 -> screenView.setImageResource(R.drawable.fourvsfour)
+                        6 -> screenView.setImageResource(R.drawable.sixvssix)
+                    }
                     wickets++
                     scoreView.setText("Score: $runs-$wickets")
                     playSound(this@BowlingActivity)
                     if (wickets == 10) {
-                        oneView.isClickable = false
-                        twoView.isClickable = false
-                        threeView.isClickable = false
-                        fourView.isClickable = false
-                        sixView.isClickable = false
-                        val intent5 = Intent(this@BowlingActivity, BattingTargetActivity::class.java)
-                        intent5.putExtra("TARGET", runs + 1)
-                        startActivity(intent5)
+                        viewEnabledFalse()
+                        val intent1 =
+                            Intent(this@BowlingActivity, BattingTargetActivity::class.java)
+                        intent1.putExtra("TARGET", runs + 1)
+                        startActivity(intent1)
                     }
-                } else if (opponentHit == 2) {
-                    screenView.setImageResource(R.drawable.onevstwo)
-                    runs += 2
+                }
+                else{
+                    runs += opponentHit
                     scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 3) {
-                    screenView.setImageResource(R.drawable.onevsthree)
-                    runs += 3
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 4) {
-                    screenView.setImageResource(R.drawable.onevsfour)
-                    runs += 4
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 6) {
-                    screenView.setImageResource(R.drawable.onevssix)
-                    runs += 6
-                    scoreView.setText("Score: $runs-$wickets")
+                    if(yourHit==1)
+                    {
+                        when(opponentHit)
+                        {
+                            2 -> {
+                                screenView.setImageResource(R.drawable.onevstwo)
+                            }
+                            3 -> {
+                                screenView.setImageResource(R.drawable.onevsthree)
+                            }
+                            4 -> {
+                                screenView.setImageResource(R.drawable.onevsfour)
+                            }
+                            6 -> {
+                                screenView.setImageResource(R.drawable.onevssix)
+                            }
+                        }
+                    }
+                    else if(yourHit==2){
+                        when(opponentHit)
+                        {
+                            1 -> {
+                                screenView.setImageResource(R.drawable.twovsone)
+                            }
+                            3 -> {
+                                screenView.setImageResource(R.drawable.twovsthree)
+                            }
+                            4 -> {
+                                screenView.setImageResource(R.drawable.twovsfour)
+                            }
+                            6 -> {
+                                screenView.setImageResource(R.drawable.twovssix)
+                            }
+                        }
+                    }
+                    else if(yourHit==3){
+                        when(opponentHit)
+                        {
+                            1 -> {
+                                screenView.setImageResource(R.drawable.threevsone)
+                            }
+                            2 -> {
+                                screenView.setImageResource(R.drawable.threevstwo)
+                            }
+                            4 -> {
+                                screenView.setImageResource(R.drawable.threevsfour)
+                            }
+                            6 -> {
+                                screenView.setImageResource(R.drawable.threevssix)
+                            }
+                        }
+                    }
+                    else if(yourHit==4){
+                        when(opponentHit)
+                        {
+                            1 -> {
+                                screenView.setImageResource(R.drawable.fourvsone)
+                            }
+                            2 -> {
+                                screenView.setImageResource(R.drawable.fourvstwo)
+                            }
+                            3 -> {
+                                screenView.setImageResource(R.drawable.fourvsthree)
+                            }
+                            6 -> {
+                                screenView.setImageResource(R.drawable.fourvssix)
+                            }
+                        }
+                    }
+                    else if(yourHit==6){
+                        when(opponentHit)
+                        {
+                            1 -> {
+                                screenView.setImageResource(R.drawable.sixvsone)
+                            }
+                            2 -> {
+                                screenView.setImageResource(R.drawable.sixvstwo)
+                            }
+                            3 -> {
+                                screenView.setImageResource(R.drawable.sixvsthree)
+                            }
+                            4 -> {
+                                screenView.setImageResource(R.drawable.sixvsfour)
+                            }
+                        }
+                    }
                 }
                 viewEnabledTrue()
             }
-
-
         }
 
+
+        oneView.setOnClickListener {
+            viewClick(1)
+        }
         twoView.setOnClickListener {
-            var randomHit=(1..6).random()
-            var opponentHit= if(randomHit==5)
-            {
-                3
-            }
-            else{
-                randomHit
-            }
-            viewEnabledFalse()
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000)
-                if (opponentHit == 1) {
-                    screenView.setImageResource(R.drawable.twovsone)
-                    runs += 1
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 2) {
-                    screenView.setImageResource(R.drawable.twovstwo)
-                    wickets++
-                    scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BowlingActivity)
-                    if (wickets == 10) {
-                        oneView.isClickable = false
-                        twoView.isClickable = false
-                        threeView.isClickable = false
-                        fourView.isClickable = false
-                        sixView.isClickable = false
-                        val intent5 = Intent(this@BowlingActivity, BattingTargetActivity::class.java)
-                        intent5.putExtra("TARGET", runs + 1)
-                        startActivity(intent5)
-                    }
-                } else if (opponentHit == 3) {
-                    screenView.setImageResource(R.drawable.twovsthree)
-                    runs += 3
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 4) {
-                    screenView.setImageResource(R.drawable.twovsfour)
-                    runs += 4
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 6) {
-                    screenView.setImageResource(R.drawable.twovssix)
-                    runs += 6
-                    scoreView.setText("Score: $runs-$wickets")
-                }
-                viewEnabledTrue()
-            }
-
+            viewClick(2)
         }
-
         threeView.setOnClickListener {
-            var randomHit=(1..6).random()
-            var opponentHit= if(randomHit==5)
-            {
-                3
-            }
-            else{
-                randomHit
-            }
-            viewEnabledFalse()
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000)
-                if (opponentHit == 1) {
-                    screenView.setImageResource(R.drawable.threevsone)
-                    runs += 1
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 2) {
-                    screenView.setImageResource(R.drawable.threevstwo)
-                    runs += 2
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 3) {
-                    screenView.setImageResource(R.drawable.threevsthree)
-                    wickets++
-                    scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BowlingActivity)
-                    if (wickets == 10) {
-                        oneView.isClickable = false
-                        twoView.isClickable = false
-                        threeView.isClickable = false
-                        fourView.isClickable = false
-                        sixView.isClickable = false
-                        val intent5 = Intent(this@BowlingActivity, BattingTargetActivity::class.java)
-                        intent5.putExtra("TARGET", runs + 1)
-                        startActivity(intent5)
-                    }
-                } else if (opponentHit == 4) {
-                    screenView.setImageResource(R.drawable.threevsfour)
-                    runs += 4
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 6) {
-                    screenView.setImageResource(R.drawable.threevssix)
-                    runs += 6
-                    scoreView.setText("Score: $runs-$wickets")
-                }
-                viewEnabledTrue()
-            }
-
+            viewClick(3)
         }
-
         fourView.setOnClickListener {
-            var randomHit=(1..6).random()
-            var opponentHit= if(randomHit==5)
-            {
-                3
-            }
-            else{
-                randomHit
-            }
-            viewEnabledFalse()
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000)
-                if (opponentHit == 1) {
-                    screenView.setImageResource(R.drawable.fourvsone)
-                    runs += 1
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 2) {
-                    screenView.setImageResource(R.drawable.fourvstwo)
-                    runs += 2
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 3) {
-                    screenView.setImageResource(R.drawable.fourvsthree)
-                    runs += 3
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 4) {
-                    screenView.setImageResource(R.drawable.fourvsfour)
-                    wickets++
-                    scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BowlingActivity)
-                    if (wickets == 10) {
-                        oneView.isClickable = false
-                        twoView.isClickable = false
-                        threeView.isClickable = false
-                        fourView.isClickable = false
-                        sixView.isClickable = false
-                        val intent5 = Intent(this@BowlingActivity, BattingTargetActivity::class.java)
-                        intent5.putExtra("TARGET", runs + 1)
-                        startActivity(intent5)
-                    }
-                } else if (opponentHit == 6) {
-                    screenView.setImageResource(R.drawable.fourvssix)
-                    runs += 6
-                    scoreView.setText("Score: $runs-$wickets")
-                }
-                viewEnabledTrue()
-            }
-
-
+            viewClick(4)
         }
-
         sixView.setOnClickListener {
-            var randomHit=(1..6).random()
-            var opponentHit= if(randomHit==5)
-            {
-                3
-            }
-            else{
-                randomHit
-            }
-            viewEnabledFalse()
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000)
-                if (opponentHit == 1) {
-                    screenView.setImageResource(R.drawable.sixvsone)
-                    runs += 1
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 2) {
-                    screenView.setImageResource(R.drawable.sixvstwo)
-                    runs += 2
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 3) {
-                    screenView.setImageResource(R.drawable.sixvsthree)
-                    runs += 3
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 4) {
-                    screenView.setImageResource(R.drawable.sixvsfour)
-                    runs += 4
-                    scoreView.setText("Score: $runs-$wickets")
-                } else if (opponentHit == 6) {
-                    screenView.setImageResource(R.drawable.sixvssix)
-                    wickets++
-                    scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BowlingActivity)
-                    if (wickets == 10) {
-                        oneView.isClickable = false
-                        twoView.isClickable = false
-                        threeView.isClickable = false
-                        fourView.isClickable = false
-                        sixView.isClickable = false
-                        val intent5 = Intent(this@BowlingActivity, BattingTargetActivity::class.java)
-                        intent5.putExtra("TARGET", runs + 1)
-                        startActivity(intent5)
-                    }
-                }
-                viewEnabledTrue()
-            }
-
+            viewClick(6)
         }
+
+    }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        // Display a Toast message to inform the user that the back button is disabled
+        Toast.makeText(this, "Back button is disabled for this activity", Toast.LENGTH_SHORT).show()
+
+        // By using the @SuppressLint annotation, we're indicating that we're intentionally not calling super.onBackPressed()
+        // super.onBackPressed()
     }
 }
