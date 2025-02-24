@@ -1,4 +1,4 @@
-package com.example.fingurecricketgame
+package com.himanshudev.fingurecricketgame
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,15 +12,10 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.himanshudev.fingurecricketgame.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -31,16 +26,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 private lateinit var database: FirebaseDatabase
 private lateinit var gameReference: DatabaseReference
-class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
-    private var mInterstitialAd: InterstitialAd? = null
+class MultiPlayerJoinBowlingActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_multi_player_join_batting_target)
+        setContentView(R.layout.activity_multi_player_join_bowling)
+
 
         database = FirebaseDatabase.getInstance()
+
 
         val oneView = findViewById<ImageView>(R.id.imageView5)
         val twoView = findViewById<ImageView>(R.id.imageView6)
@@ -52,39 +49,19 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
         val playagainView = findViewById<ImageView>(R.id.imageView10)
         val gameIdView = findViewById<TextView>(R.id.textView10)
         val lottieAnimationView = findViewById<LottieAnimationView>(R.id.lottie1)
-        val targetView=findViewById<TextView>(R.id.textView9)
+
+        val gameId = intent.getStringExtra("GAMEID")
+        gameIdView.text = "Game ID: $gameId"
+        gameReference = database.reference.child("games").child(gameId!!)
+        var runs = 0
+        var wickets = 0
+        var player1hit = 0
 
         val scope= CoroutineScope(Dispatchers.IO)
-
-        var target=intent.getIntExtra("TARGET",0)
-        targetView.text="Target: $target Runs"
-        val gameId=intent.getStringExtra("GAMEID")
-        gameIdView.text="Game ID: $gameId"
-        gameReference = database.reference.child("games").child(gameId!!)
-
-        var runs=0
-        var wickets=0
 
         fun showToast(message: String) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
-
-        MobileAds.initialize(this@MultiPlayerJoinBattingTargetActivity) {}
-
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(this@MultiPlayerJoinBattingTargetActivity,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                mInterstitialAd = interstitialAd
-                mInterstitialAd?.show(this@MultiPlayerJoinBattingTargetActivity)
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                mInterstitialAd = null
-            }
-
-
-        })
-
         fun vibratePhone(context: Context) {
             val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -141,36 +118,13 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
             }
         }
 
-        fun check_Result(wicket:Int,runs:Int)
-        {
-            if(runs>=target)
-            {
-                val remainingWkt=10-wickets
-                targetView.setText("You win by $remainingWkt Wickets")
-                oneView.isClickable=false
-                twoView.isClickable=false
-                threeView.isClickable=false
-                fourView.isClickable=false
-                sixView.isClickable=false
 
-            }
-            else if(wickets==10)
-            {
-                val remainingRuns=target-runs-1
-                targetView.setText("You loose by $remainingRuns Runs")
-                oneView.isClickable=false
-                twoView.isClickable=false
-                threeView.isClickable=false
-                fourView.isClickable=false
-                sixView.isClickable=false
-            }
-        }
+        //For Check Player 2 Joined or Not
         var player1ResponseListener: ValueEventListener? = null
-
         fun removePlayer1ResponseListener() {
             player1ResponseListener?.let {
                 gameReference.child("Player1Response").removeEventListener(it)
-                player1ResponseListener = null
+                player1ResponseListener = null  // Set it to null to indicate that the listener is removed
             }
         }
 
@@ -180,74 +134,80 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
         }
 
         oneView.setOnClickListener {
-
             if(!checkInternetConnection())
             {
                 showToast("No Internet Connection!!")
                 return@setOnClickListener
             }
+
             gameReference.child("Player2Hit").setValue(1)
             gameReference.child("Player2Response").setValue(true)
             makeVisible()
 
+            // Step 2: Listen for Player2Response changes
             scope.launch {
                 player1ResponseListener = gameReference.child("Player1Response").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val player1Response = dataSnapshot.getValue(Boolean::class.java)
 
                         if (player1Response == true) {
+                            // Fetch the value of Player2Hit
                             gameReference.child("Player1Hit")
                                 .get().addOnSuccessListener { hitSnapshot ->
-                                    val player1hit = hitSnapshot.getValue(Int::class.java)
+                                    val player1hit =
+                                        hitSnapshot.getValue(Int::class.java)
 
+                                    // Update UI based on Player2Hit value
                                     when (player1hit) {
                                         1 -> {
                                             wickets++
-                                            gameReference.child("Player2Wickets")
-                                                .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevsone)
-                                            vibratePhone(this@MultiPlayerJoinBattingTargetActivity)
-                                            playSound(this@MultiPlayerJoinBattingTargetActivity)
-
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
+                                            if(wickets==10)
+                                            {
+                                                gameReference.child("Player2Response")
+                                                    .setValue(false)
+                                                oneView.isClickable=false
+                                                twoView.isClickable=false
+                                                threeView.isClickable=false
+                                                fourView.isClickable=false
+                                                sixView.isClickable=false
+                                                val intent1= Intent(this@MultiPlayerJoinBowlingActivity,MultiPlayerJoinBattingTargetActivity::class.java)
+                                                intent1.putExtra("TARGET",runs+1)
+                                                intent1.putExtra("GAMEID",gameId)
+                                                startActivity(intent1)
+                                            }
                                         }
 
                                         2 -> {
-                                            runs++
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=2
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevstwo)
                                         }
 
                                         3 -> {
-                                            runs++
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=3
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevsthree)
                                         }
 
                                         4 -> {
-                                            runs++
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=4
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevsfour)
                                         }
 
                                         6 -> {
-                                            runs++
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=6
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.onevssix)
                                         }
                                     }
 
+                                    // Update Player1Response to false
                                     gameReference.child("Player2Response")
                                         .setValue(false)
-                                    check_Result(wickets,runs)
                                     CoroutineScope(Dispatchers.Main).launch {
                                         withContext(Dispatchers.Main)
                                         {
@@ -287,6 +247,7 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
             gameReference.child("Player2Response").setValue(true)
             makeVisible()
 
+            // Step 2: Listen for Player2Response changes
             scope.launch {
                 player1ResponseListener = gameReference.child("Player1Response").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -296,13 +257,13 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
                             // Fetch the value of Player2Hit
                             gameReference.child("Player1Hit")
                                 .get().addOnSuccessListener { hitSnapshot ->
-                                    val player1hit = hitSnapshot.getValue(Int::class.java)
+                                    val player1hit =
+                                        hitSnapshot.getValue(Int::class.java)
 
+                                    // Update UI based on Player2Hit value
                                     when (player1hit) {
                                         1 -> {
-                                            runs+=2
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=1
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovsone)
 
@@ -310,43 +271,47 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
 
                                         2 -> {
                                             wickets++
-                                            gameReference.child("Player2Wickets")
-                                                .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovstwo)
-                                            vibratePhone(this@MultiPlayerJoinBattingTargetActivity)
-                                            playSound(this@MultiPlayerJoinBattingTargetActivity)
-
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
+                                            if(wickets==10)
+                                            {
+                                                gameReference.child("Player2Response")
+                                                    .setValue(false)
+                                                oneView.isClickable=false
+                                                twoView.isClickable=false
+                                                threeView.isClickable=false
+                                                fourView.isClickable=false
+                                                sixView.isClickable=false
+                                                val intent1= Intent(this@MultiPlayerJoinBowlingActivity,MultiPlayerJoinBattingTargetActivity::class.java)
+                                                intent1.putExtra("TARGET",runs+1)
+                                                intent1.putExtra("GAMEID",gameId)
+                                                startActivity(intent1)
+                                            }
                                         }
 
                                         3 -> {
-                                            runs+=2
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=3
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovsthree)
                                         }
 
                                         4 -> {
-                                            runs+=2
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=4
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovsfour)
                                         }
 
                                         6 -> {
-                                            runs+=2
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=6
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.twovssix)
                                         }
                                     }
 
+                                    // Update Player1Response to false
                                     gameReference.child("Player2Response")
                                         .setValue(false)
-                                    check_Result(wickets,runs)
                                     CoroutineScope(Dispatchers.Main).launch {
                                         withContext(Dispatchers.Main)
                                         {
@@ -392,25 +357,23 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
                         val player1Response = dataSnapshot.getValue(Boolean::class.java)
 
                         if (player1Response == true) {
+                            // Fetch the value of Player2Hit
                             gameReference.child("Player1Hit")
                                 .get().addOnSuccessListener { hitSnapshot ->
                                     val player1hit =
                                         hitSnapshot.getValue(Int::class.java)
 
+                                    // Update UI based on Player2Hit value
                                     when (player1hit) {
                                         1 -> {
-                                            runs+=3
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=1
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevsone)
 
                                         }
 
                                         2 -> {
-                                            runs+=3
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=2
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevstwo)
                                         }
@@ -418,35 +381,41 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
                                         3 -> {
 
                                             wickets++
-                                            gameReference.child("Player2Wickets")
-                                                .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevsthree)
-                                            vibratePhone(this@MultiPlayerJoinBattingTargetActivity)
-                                            playSound(this@MultiPlayerJoinBattingTargetActivity)
-
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
+                                            if(wickets==10)
+                                            {
+                                                gameReference.child("Player2Response")
+                                                    .setValue(false)
+                                                oneView.isClickable=false
+                                                twoView.isClickable=false
+                                                threeView.isClickable=false
+                                                fourView.isClickable=false
+                                                sixView.isClickable=false
+                                                val intent1= Intent(this@MultiPlayerJoinBowlingActivity,MultiPlayerJoinBattingTargetActivity::class.java)
+                                                intent1.putExtra("TARGET",runs+1)
+                                                intent1.putExtra("GAMEID",gameId)
+                                                startActivity(intent1)
+                                            }
                                         }
 
                                         4 -> {
-                                            runs+=3
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=4
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevsfour)
                                         }
 
                                         6 -> {
-                                            runs+=3
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=6
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.threevssix)
                                         }
                                     }
 
+                                    // Update Player1Response to false
                                     gameReference.child("Player2Response")
                                         .setValue(false)
-                                    check_Result(wickets,runs)
                                     CoroutineScope(Dispatchers.Main).launch {
                                         withContext(Dispatchers.Main)
                                         {
@@ -485,40 +454,36 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
             gameReference.child("Player2Response").setValue(true)
             makeVisible()
 
+            // Step 2: Listen for Player2Response changes
             scope.launch {
                 player1ResponseListener = gameReference.child("Player1Response").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val player1Response = dataSnapshot.getValue(Boolean::class.java)
 
                         if (player1Response == true) {
-
+                            // Fetch the value of Player2Hit
                             gameReference.child("Player1Hit")
                                 .get().addOnSuccessListener { hitSnapshot ->
                                     val player1hit =
                                         hitSnapshot.getValue(Int::class.java)
 
+                                    // Update UI based on player1hit value
                                     when (player1hit) {
                                         1 -> {
-                                            runs+=4
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=1
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvsone)
 
                                         }
 
                                         2 -> {
-                                            runs+=4
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=2
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvstwo)
                                         }
 
                                         3 -> {
-                                            runs+=4
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=3
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvsthree)
 
@@ -526,27 +491,35 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
 
                                         4 -> {
                                             wickets++
-                                            gameReference.child("Player2Wickets")
-                                                .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvsfour)
-                                            vibratePhone(this@MultiPlayerJoinBattingTargetActivity)
-                                            playSound(this@MultiPlayerJoinBattingTargetActivity)
-
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
+                                            if(wickets==10)
+                                            {
+                                                gameReference.child("Player2Response")
+                                                    .setValue(false)
+                                                oneView.isClickable=false
+                                                twoView.isClickable=false
+                                                threeView.isClickable=false
+                                                fourView.isClickable=false
+                                                sixView.isClickable=false
+                                                val intent1= Intent(this@MultiPlayerJoinBowlingActivity,MultiPlayerJoinBattingTargetActivity::class.java)
+                                                intent1.putExtra("TARGET",runs+1)
+                                                intent1.putExtra("GAMEID",gameId)
+                                                startActivity(intent1)
+                                            }
                                         }
 
                                         6 -> {
-                                            runs+=4
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=6
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.fourvssix)
                                         }
                                     }
 
+                                    // Update Player1Response to false
                                     gameReference.child("Player2Response")
                                         .setValue(false)
-                                    check_Result(wickets,runs)
                                     CoroutineScope(Dispatchers.Main).launch {
                                         withContext(Dispatchers.Main)
                                         {
@@ -585,48 +558,43 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
             gameReference.child("Player2Response").setValue(true)
             makeVisible()
 
+            // Step 2: Listen for Player2Response changes
             scope.launch {
                 player1ResponseListener = gameReference.child("Player1Response").addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val player1Response = dataSnapshot.getValue(Boolean::class.java)
 
                         if (player1Response == true) {
+                            // Fetch the value of player1hit
                             gameReference.child("Player1Hit")
                                 .get().addOnSuccessListener { hitSnapshot ->
                                     val player1hit =
                                         hitSnapshot.getValue(Int::class.java)
 
+                                    // Update UI based on player1hit value
                                     when (player1hit) {
                                         1 -> {
-                                            runs+=6
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=1
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvsone)
 
                                         }
 
                                         2 -> {
-                                            runs+=6
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=2
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvstwo)
                                         }
 
                                         3 -> {
-                                            runs+=6
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=3
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvsthree)
 
                                         }
 
                                         4 -> {
-                                            runs+=6
-                                            gameReference.child("Player2BattingRuns")
-                                                .setValue(runs)
+                                            runs+=4
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvsfour)
 
@@ -634,19 +602,29 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
 
                                         6 -> {
                                             wickets++
-                                            gameReference.child("Player2Wickets")
-                                                .setValue(wickets)
                                             scoreView.text = "Score: $runs-$wickets"
                                             screenView.setImageResource(R.drawable.sixvssix)
-                                            vibratePhone(this@MultiPlayerJoinBattingTargetActivity)
-                                            playSound(this@MultiPlayerJoinBattingTargetActivity)
-
+                                            playSound(this@MultiPlayerJoinBowlingActivity)
+                                            if(wickets==10)
+                                            {
+                                                gameReference.child("Player2Response")
+                                                    .setValue(false)
+                                                oneView.isClickable=false
+                                                twoView.isClickable=false
+                                                threeView.isClickable=false
+                                                fourView.isClickable=false
+                                                sixView.isClickable=false
+                                                val intent1= Intent(this@MultiPlayerJoinBowlingActivity,MultiPlayerJoinBattingTargetActivity::class.java)
+                                                intent1.putExtra("TARGET",runs+1)
+                                                intent1.putExtra("GAMEID",gameId)
+                                                startActivity(intent1)
+                                            }
                                         }
                                     }
 
+                                    // Update Player1Response to false
                                     gameReference.child("Player2Response")
                                         .setValue(false)
-                                    check_Result(wickets,runs)
                                     CoroutineScope(Dispatchers.Main).launch {
                                         withContext(Dispatchers.Main)
                                         {
@@ -674,14 +652,15 @@ class MultiPlayerJoinBattingTargetActivity : AppCompatActivity() {
 
         }
 
-        @SuppressLint("MissingSuperCall")
-        fun onBackPressed() {
-            // Display a Toast message to inform the user that the back button is disabled
-            Toast.makeText(this, "Back button is disabled for this activity", Toast.LENGTH_SHORT).show()
-
-            // By using the @SuppressLint annotation, we're indicating that we're intentionally not calling super.onBackPressed()
-            // super.onBackPressed()
-        }
 
     }
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        // Display a Toast message to inform the user that the back button is disabled
+        Toast.makeText(this, "Back button is disabled for this activity", Toast.LENGTH_SHORT).show()
+
+        // By using the @SuppressLint annotation, we're indicating that we're intentionally not calling super.onBackPressed()
+        // super.onBackPressed()
+    }
+
 }

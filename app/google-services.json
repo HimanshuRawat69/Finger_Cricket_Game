@@ -1,15 +1,36 @@
 {
   "project_info": {
     "project_number": "874572887744",
+    "firebase_url": "https://fingure-cricket-default-rtdb.firebaseio.com",
     "project_id": "fingure-cricket",
-    "storage_bucket": "fingure-cricket.appspot.com"
+    "storage_bucket": "fingure-cricket.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:874572887744:android:9b7511aad23ada86395f25",
         "android_client_info": {
-          "package_name": "com.example.fingurecricketgame"
+          "package_name": "com.himanshudev.fingurecricketgame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgYKBKNgkpT0dt4xgpME6RY-SPwfcLSsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-9926828039205424~2592722015"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874572887744:android:fd092008db155276395f25",
+        "android_client_info": {
+          "package_name": "com.himanshudev.fingurecricketgame"
         }
       },
       "oauth_client": [],

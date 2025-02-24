@@ -1,4 +1,4 @@
-package com.example.fingurecricketgame
+package com.himanshudev.fingurecricketgame
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,66 +11,43 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
+import com.himanshudev.fingurecricketgame.R
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class BowlingTargetActivity : AppCompatActivity() {
+class BattingTargetActivity : AppCompatActivity() {
     private var mInterstitialAd: InterstitialAd? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_bowling_target)
+        setContentView(R.layout.activity_batting_target)
 
-
-        var oneView = findViewById<ImageView>(R.id.imageView5)
-        var twoView = findViewById<ImageView>(R.id.imageView6)
-        var threeView = findViewById<ImageView>(R.id.imageView7)
-        var fourView = findViewById<ImageView>(R.id.imageView8)
-        var sixView = findViewById<ImageView>(R.id.imageView9)
-        var scoreView = findViewById<TextView>(R.id.textView8)
-        var screenView = findViewById<ImageView>(R.id.imageView4)
-        var targetView = findViewById<TextView>(R.id.textView9)
-        var playagainView = findViewById<ImageView>(R.id.imageView10)
+        var oneView=findViewById<ImageView>(R.id.imageView5)
+        var twoView=findViewById<ImageView>(R.id.imageView6)
+        var threeView=findViewById<ImageView>(R.id.imageView7)
+        var fourView=findViewById<ImageView>(R.id.imageView8)
+        var sixView=findViewById<ImageView>(R.id.imageView9)
+        var scoreView=findViewById<TextView>(R.id.textView8)
+        var screenView=findViewById<ImageView>(R.id.imageView4)
+        var playagainView=findViewById<ImageView>(R.id.imageView10)
+        var targetView=findViewById<TextView>(R.id.textView9)
         val lottieAnimationView = findViewById<LottieAnimationView>(R.id.lottie1)
+        val target=intent.getIntExtra("TARGET",0)
+        targetView.text="Target: $target Runs"
 
-        val target = intent.getIntExtra("TARGET", 0)
-        targetView.text = "Target: $target Runs"
-
-        var runs = 0
-        var wickets = 0
-
-        MobileAds.initialize(this@BowlingTargetActivity) {}
-
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(
-            this@BowlingTargetActivity,
-            "ca-app-pub-3940256099942544/1033173712",
-            adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
-                    mInterstitialAd?.show(this@BowlingTargetActivity)
-                }
-
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mInterstitialAd = null
-                }
+        var runs=0
+        var wickets=0
 
 
-            })
+
+
+
 
         fun playSound(context: Context) {
-            val mediaPlayer = MediaPlayer.create(
-                context,
-                R.raw.wktsound
-            )
+            val mediaPlayer = MediaPlayer.create(context, R.raw.wktsound)
             mediaPlayer.start()
 
             mediaPlayer.setOnCompletionListener {
@@ -97,18 +74,12 @@ class BowlingTargetActivity : AppCompatActivity() {
         }
 
         playagainView.setOnClickListener {
-            val intent6 = Intent(this, BattingBowlingSelect::class.java)
+            val intent6= Intent(this,BattingBowlingSelect::class.java)
             startActivity(intent6)
         }
 
         fun viewClick(yourHit:Int)
         {
-           if (mInterstitialAd != null) {
-                mInterstitialAd?.show(this@BowlingTargetActivity)
-            }
-            else{
-                Toast.makeText(this,"not loadeed",Toast.LENGTH_SHORT).show()
-            }
 
             var randomHit = (1..6).random()
             var opponentHit = if (randomHit == 5) {
@@ -130,10 +101,10 @@ class BowlingTargetActivity : AppCompatActivity() {
                     }
                     wickets++
                     scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BowlingTargetActivity)
+                    playSound(this@BattingTargetActivity)
                 }
                 else{
-                    runs += opponentHit
+                    runs += yourHit
                     scoreView.setText("Score: $runs-$wickets")
                     if(yourHit==1)
                     {
@@ -240,9 +211,7 @@ class BowlingTargetActivity : AppCompatActivity() {
                     fourView.isClickable = false
                     sixView.isClickable = false
                 }
-                else {
-                    viewEnabledTrue()
-                }
+                viewEnabledTrue()
             }
         }
 
@@ -262,7 +231,8 @@ class BowlingTargetActivity : AppCompatActivity() {
         sixView.setOnClickListener {
             viewClick(6)
         }
-    }
+
+        }
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         // Display a Toast message to inform the user that the back button is disabled

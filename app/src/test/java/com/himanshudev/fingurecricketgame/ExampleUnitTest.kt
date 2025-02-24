@@ -1,4 +1,4 @@
-package com.example.fingurecricketgame
+package com.himanshudev.fingurecricketgame
 
 import org.junit.Test
 

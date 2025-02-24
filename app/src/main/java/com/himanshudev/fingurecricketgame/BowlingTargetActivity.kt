@@ -1,4 +1,4 @@
-package com.example.fingurecricketgame
+package com.himanshudev.fingurecricketgame
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,37 +11,60 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
+import com.himanshudev.fingurecricketgame.R
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class BattingActivity : AppCompatActivity() {
-
+class BowlingTargetActivity : AppCompatActivity() {
+    private var mInterstitialAd: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_batting)
+        setContentView(R.layout.activity_bowling_target)
 
-        val oneView = findViewById<ImageView>(R.id.imageView5)
-        val twoView = findViewById<ImageView>(R.id.imageView6)
-        val threeView = findViewById<ImageView>(R.id.imageView7)
-        val fourView = findViewById<ImageView>(R.id.imageView8)
-        val sixView = findViewById<ImageView>(R.id.imageView9)
-        val scoreView = findViewById<TextView>(R.id.textView8)
-        val screenView = findViewById<ImageView>(R.id.imageView4)
-        val playagainView = findViewById<ImageView>(R.id.imageView10)
+
+        var oneView = findViewById<ImageView>(R.id.imageView5)
+        var twoView = findViewById<ImageView>(R.id.imageView6)
+        var threeView = findViewById<ImageView>(R.id.imageView7)
+        var fourView = findViewById<ImageView>(R.id.imageView8)
+        var sixView = findViewById<ImageView>(R.id.imageView9)
+        var scoreView = findViewById<TextView>(R.id.textView8)
+        var screenView = findViewById<ImageView>(R.id.imageView4)
+        var targetView = findViewById<TextView>(R.id.textView9)
+        var playagainView = findViewById<ImageView>(R.id.imageView10)
         val lottieAnimationView = findViewById<LottieAnimationView>(R.id.lottie1)
 
+        val target = intent.getIntExtra("TARGET", 0)
+        targetView.text = "Target: $target Runs"
 
         var runs = 0
         var wickets = 0
 
+        MobileAds.initialize(this@BowlingTargetActivity) {}
+
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            this@BowlingTargetActivity,
+            "ca-app-pub-3940256099942544/1033173712",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                    mInterstitialAd?.show(this@BowlingTargetActivity)
+                }
+
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mInterstitialAd = null
+                }
+
+
+            })
 
         fun playSound(context: Context) {
             val mediaPlayer = MediaPlayer.create(
@@ -73,7 +96,6 @@ class BattingActivity : AppCompatActivity() {
             lottieAnimationView.visibility = View.INVISIBLE
         }
 
-
         playagainView.setOnClickListener {
             val intent6 = Intent(this, BattingBowlingSelect::class.java)
             startActivity(intent6)
@@ -81,6 +103,7 @@ class BattingActivity : AppCompatActivity() {
 
         fun viewClick(yourHit:Int)
         {
+
             var randomHit = (1..6).random()
             var opponentHit = if (randomHit == 5) {
                 (1..4).random()
@@ -101,17 +124,10 @@ class BattingActivity : AppCompatActivity() {
                     }
                     wickets++
                     scoreView.setText("Score: $runs-$wickets")
-                    playSound(this@BattingActivity)
-                    if (wickets == 10) {
-                        viewEnabledFalse()
-                        val intent1 =
-                            Intent(this@BattingActivity, BowlingTargetActivity::class.java)
-                        intent1.putExtra("TARGET", runs + 1)
-                        startActivity(intent1)
-                    }
+                    playSound(this@BowlingTargetActivity)
                 }
                 else{
-                    runs += yourHit
+                    runs += opponentHit
                     scoreView.setText("Score: $runs-$wickets")
                     if(yourHit==1)
                     {
@@ -200,9 +216,31 @@ class BattingActivity : AppCompatActivity() {
                         }
                     }
                 }
-                viewEnabledTrue()
+                if (runs >= target) {
+                    val remainingWkt = 10 - wickets
+                    targetView.setText("You loose by $remainingWkt Wickets")
+                    oneView.isClickable = false
+                    twoView.isClickable = false
+                    threeView.isClickable = false
+                    fourView.isClickable = false
+                    sixView.isClickable = false
+
+                } else if (wickets == 10) {
+                    val remainingRuns = target - runs - 1
+                    targetView.setText("You won by $remainingRuns Runs")
+                    oneView.isClickable = false
+                    twoView.isClickable = false
+                    threeView.isClickable = false
+                    fourView.isClickable = false
+                    sixView.isClickable = false
+                }
+                else {
+                    viewEnabledTrue()
+                }
             }
         }
+
+
         oneView.setOnClickListener {
             viewClick(1)
         }

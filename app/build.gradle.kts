@@ -8,11 +8,11 @@ plugins {
 
 
 android {
-    namespace = "com.example.fingurecricketgame"
+    namespace = "com.himanshudev.fingurecricketgame"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.fingurecricketgame"
+        applicationId = "com.himanshudev.fingurecricketgame"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
