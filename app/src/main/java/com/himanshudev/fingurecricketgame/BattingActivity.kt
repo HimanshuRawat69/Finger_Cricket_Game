@@ -76,6 +76,7 @@ class BattingActivity : AppCompatActivity() {
 
         fun viewClick(yourHit:Int)
         {
+            var randomNo={}
             var randomHit = (1..6).random()
             var opponentHit = if (randomHit == 5) {
                 (1..4).random()

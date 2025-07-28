@@ -1,5 +1,6 @@
 package com.himanshudev.fingurecricketgame
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -33,4 +34,11 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    override fun onBackPressed() {
+        super.onBackPressed()  // finish the activity
+        finishAffinity()       // close all activities in the app
+        System.exit(0)         // kill the process
+    }
+
+
 }
